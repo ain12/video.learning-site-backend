@@ -6,4 +6,11 @@ export interface IQuestion {
     options: string[]
     correctOption: number
     videoId?: ObjectId
-  }
+}
+
+export interface IQuestionOption {
+  _id?: ObjectId
+  QuestionId: ObjectId
+  text: string         
+  isCorrect: boolean   
+}

@@ -7,10 +7,7 @@ const collectionVideo = getCollection<IVideo>('videos')
 export const createVideo = async (params: IVideo): Promise<boolean> => {
     try {
         const result = await collectionVideo.insertOne(params)
-        if(result) {
-            return true
-        }
-        return false
+        return result.acknowledged
       } catch (error) {
         console.error('Error create video:', error)
         throw new Error('Error create video')
@@ -27,10 +24,7 @@ export const updateVideo = async (id: string, params: Partial<IVideo>): Promise<
                 $set: params
             }
         )
-        if(result) {
-            return true
-        }
-        return false
+        return result.modifiedCount > 0
     } catch (error) {
         console.error('Error update video:', error)
         throw new Error('Error update video')
@@ -56,9 +50,9 @@ export const getAllVideos = async (whereOptions: Partial<IVideo>): Promise<IVide
     }
 }
 
-export const deleteVideo = async (videoId: string): Promise<void> => {
+export const deleteVideo = async (VideoId: string): Promise<void> => {
     try {
-        await collectionVideo.deleteOne({ _id: new ObjectId(videoId) })
+        await collectionVideo.deleteOne({ _id: new ObjectId(VideoId) })
     } catch (error) {
         console.error('Could not get video:', error)
         throw new Error('Error getting video')
