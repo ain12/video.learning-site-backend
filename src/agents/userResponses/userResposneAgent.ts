@@ -2,10 +2,9 @@ import { getCollection } from '../../db'
 import { ObjectId } from 'mongodb'
 import { IUserResponse } from '../../types/UserRespone'
 
-const collectionUserResponse = getCollection<IUserResponse>('userResponses')
-
 export const createUserResponse = async (params: IUserResponse): Promise<boolean> => {
   try {
+    const collectionUserResponse = getCollection<IUserResponse>('userResponses')
     const result = await collectionUserResponse.insertOne(params)
     return result.acknowledged
   } catch (error) {
@@ -16,6 +15,7 @@ export const createUserResponse = async (params: IUserResponse): Promise<boolean
 
 export const updateUserResponse = async (id: string, params: Partial<IUserResponse>): Promise<boolean> => {
   try {
+    const collectionUserResponse = getCollection<IUserResponse>('userResponses')
     const result = await collectionUserResponse.updateOne(
       { _id: new ObjectId(id) },
       { $set: params }
@@ -29,6 +29,7 @@ export const updateUserResponse = async (id: string, params: Partial<IUserRespon
 
 export const getUserResponseInstance = async (id: string): Promise<IUserResponse | null> => {
   try {
+    const collectionUserResponse = getCollection<IUserResponse>('userResponses')
     return await collectionUserResponse.findOne({ _id: new ObjectId(id) })
   } catch (error) {
     console.error('Could not get response:', error)
@@ -38,6 +39,7 @@ export const getUserResponseInstance = async (id: string): Promise<IUserResponse
 
 export const getUserResponsesByQuestionId = async (questionId: string): Promise<IUserResponse[] | null> => {
   try {
+    const collectionUserResponse = getCollection<IUserResponse>('userResponses')
     return await collectionUserResponse.find({ questionId: new ObjectId(questionId) }).toArray()
   } catch (error) {
     console.error('Could not get responses:', error)
@@ -47,6 +49,7 @@ export const getUserResponsesByQuestionId = async (questionId: string): Promise<
 
 export const deleteUserResponse = async (id: string): Promise<void> => {
   try {
+    const collectionUserResponse = getCollection<IUserResponse>('userResponses')
     await collectionUserResponse.deleteOne({ _id: new ObjectId(id) })
   } catch (error) {
     console.error('Could not delete user response:', error)

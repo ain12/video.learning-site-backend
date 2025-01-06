@@ -2,9 +2,8 @@ import { getCollection } from '../../db'
 import { ObjectId } from 'mongodb'
 import { IVideo } from '../../types/Video'
 
-const collectionVideo = getCollection<IVideo>('videos')
-
 export const createVideo = async (params: IVideo): Promise<boolean> => {
+    const collectionVideo = getCollection<IVideo>('videos')
     try {
         const result = await collectionVideo.insertOne(params)
         return result.acknowledged
@@ -15,6 +14,7 @@ export const createVideo = async (params: IVideo): Promise<boolean> => {
 }
 
 export const updateVideo = async (id: string, params: Partial<IVideo>): Promise<boolean> => {
+    const collectionVideo = getCollection<IVideo>('videos')
     try {
         const result = await collectionVideo.updateOne(
             {
@@ -32,6 +32,7 @@ export const updateVideo = async (id: string, params: Partial<IVideo>): Promise<
 }
 
 export const getVideoInstance = async (id: string): Promise<IVideo | null> => {
+    const collectionVideo = getCollection<IVideo>('videos')
     try {
         return await collectionVideo.findOne({ _id: new ObjectId(id) })
     } catch (error) {
@@ -41,6 +42,7 @@ export const getVideoInstance = async (id: string): Promise<IVideo | null> => {
 }
 
 export const getAllVideos = async (whereOptions: Partial<IVideo>): Promise<IVideo[] | null> => {
+    const collectionVideo = getCollection<IVideo>('videos')
     try {
         const myQuery = whereOptions || {}
         return await collectionVideo.find(myQuery).toArray()
@@ -51,6 +53,7 @@ export const getAllVideos = async (whereOptions: Partial<IVideo>): Promise<IVide
 }
 
 export const deleteVideo = async (VideoId: string): Promise<void> => {
+    const collectionVideo = getCollection<IVideo>('videos')
     try {
         await collectionVideo.deleteOne({ _id: new ObjectId(VideoId) })
     } catch (error) {

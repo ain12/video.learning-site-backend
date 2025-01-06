@@ -3,12 +3,19 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import { connectDB } from './db'
 import routes from './routes'
+import { createVideo } from './agents/videos/videoAgent'
 
 dotenv.config()
 
 const startDB = async () => {
     try {
         await connectDB()
+        await createVideo({
+            title: 'Example video',
+            url: 'url',
+            duration: 20,
+            createdAt: new Date(),
+        });
         
         const app = express()
         
