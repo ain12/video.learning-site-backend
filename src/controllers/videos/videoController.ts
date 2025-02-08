@@ -1,4 +1,6 @@
 import { Request, Response } from 'express'
+import cloudinary from 'cloudinary'
+import fs from 'fs/promises'
 import { createVideo, deleteVideo, getAllVideos, getVideoInstance, updateVideo } from '../../agents/videos/videoAgent'
 
 export const createVideoController = async (req: Request, res: Response): Promise<void> => {
@@ -9,6 +11,44 @@ export const createVideoController = async (req: Request, res: Response): Promis
       res.status(500).json({ error: error.message })
     }
 }
+interface MulterRequest extends Request {
+  file?: Express.Multer.File
+}
+
+export const uploadVideoController = async (req: MulterRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ message: 'No file uploaded' })
+      return
+    }
+
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.v2.uploader.upload_stream(
+        { resource_type: 'video', public_id: req.file?.originalname },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      )
+      req.file?.stream.pipe(result)
+    })
+
+    await fs.unlink(req.file.path)
+
+    res.status(200).json({
+      message: 'Video uploaded',
+      url: result.secure_url,
+    })
+
+  } catch (error) {
+    res.status(500).json({ message: 'Error uploading video', error })
+  }
+};
+
+
 
 export const updateVideoController = async (req: Request, res: Response): Promise<void> => {
     try {
